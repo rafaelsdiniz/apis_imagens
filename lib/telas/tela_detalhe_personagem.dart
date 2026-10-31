@@ -1,6 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../modelos/personagem.dart';
+import '../tema.dart';
+
+// Usadas também na lista de personagens
+Color corDoStatus(String status) {
+  switch (status) {
+    case 'Alive': return const Color(0xFF34C759);
+    case 'Dead': return Cores.vermelho;
+    case 'unknown': return Colors.orange;
+    default: return Cores.secundario;
+  }
+}
+
+String statusEmPortugues(String status) {
+  switch (status) {
+    case 'Alive': return 'Vivo';
+    case 'Dead': return 'Morto';
+    default: return 'Desconhecido';
+  }
+}
+
+String _generoEmPortugues(String genero) {
+  switch (genero) {
+    case 'Male': return 'Masculino';
+    case 'Female': return 'Feminino';
+    case 'Genderless': return 'Sem gênero';
+    default: return 'Desconhecido';
+  }
+}
 
 // Exercício 10: virou Stateful para controlar o botão de favorito
 class TelaDetalhePersonagem extends StatefulWidget {
@@ -40,74 +68,73 @@ class _TelaDetalhePersonagemState extends State<TelaDetalhePersonagem> {
     setState(() { favorito = !favorito; });
   }
 
-  Color _corStatus() {
-    switch (widget.personagem.status) {
-      case 'Alive': return Colors.green;
-      case 'Dead': return Colors.red;
-      case 'unknown': return Colors.orange;
-      default: return Colors.grey;
-    }
-  }
+  Widget _linha(IconData icone, Color cor, String rotulo, String valor) =>
+    ListTile(
+      leading: IconeQuadrado(icone, cor),
+      title: Text(rotulo,
+        style: const TextStyle(fontSize: 13, color: Cores.secundario)),
+      subtitle: Text(valor,
+        style: const TextStyle(fontSize: 16, color: Cores.texto)),
+    );
 
   @override
   Widget build(BuildContext context) {
     final personagem = widget.personagem;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(personagem.nome),
-        actions: [
-          IconButton(
-            onPressed: alternarFavorito,
-            tooltip: favorito ? 'Desmarcar favorito' : 'Marcar favorito',
-            icon: Icon(favorito ? Icons.star : Icons.star_border,
-              color: favorito ? Colors.amber : null)),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: Image.network(personagem.imagem,
-              width: 240, height: 240, fit: BoxFit.cover,
-              errorBuilder: (_, _, _) =>
-                const Icon(Icons.broken_image, size: 120)),
-          ),
-          const SizedBox(height: 16),
-          Text(personagem.nome,
-            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 8),
-          Chip(
-            avatar: Icon(Icons.circle, size: 12, color: _corStatus()),
-            label: Text(personagem.status),
-          ),
-          const SizedBox(height: 8),
-          ElevatedButton.icon(
-            onPressed: alternarFavorito,
-            icon: Icon(favorito ? Icons.star : Icons.star_border),
-            label: Text(favorito ? 'Favorito' : 'Marcar como favorito')),
-          const Divider(height: 32),
-          ListTile(
-            leading: const Icon(Icons.category),
-            title: const Text('Espécie'),
-            subtitle: Text(personagem.especie)),
-          ListTile(
-            leading: const Icon(Icons.wc),
-            title: const Text('Gênero'),
-            subtitle: Text(personagem.genero)),
-          ListTile(
-            leading: const Icon(Icons.public),
-            title: const Text('Origem'),
-            subtitle: Text(personagem.origem)),
-          ListTile(
-            leading: const Icon(Icons.location_on),
-            title: const Text('Localização atual'),
-            subtitle: Text(personagem.localizacao)),
-          ListTile(
-            leading: const Icon(Icons.tag),
-            title: const Text('ID'),
-            subtitle: Text('${personagem.id}')),
-        ]),
+    final cor = corDoStatus(personagem.status);
+    return Theme(
+      data: tema(Cores.verde),
+      child: Scaffold(
+        appBar: AppBar(title: Text(personagem.nome)),
+        body: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            Center(child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: Image.network(personagem.imagem,
+                width: 200, height: 200, fit: BoxFit.cover,
+                errorBuilder: (_, _, _) =>
+                  const Icon(Icons.broken_image, size: 120)),
+            )),
+            const SizedBox(height: 16),
+            Text(personagem.nome, textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w700)),
+            const SizedBox(height: 8),
+            Center(child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+              decoration: ShapeDecoration(
+                color: cor.withValues(alpha: 0.12), shape: const StadiumBorder()),
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                Icon(Icons.circle, size: 9, color: cor),
+                const SizedBox(width: 6),
+                Text(statusEmPortugues(personagem.status),
+                  style: TextStyle(color: cor, fontWeight: FontWeight.w600)),
+              ]),
+            )),
+            const SizedBox(height: 20),
+            ElevatedButton.icon(
+              onPressed: alternarFavorito,
+              style: favorito ? ElevatedButton.styleFrom(
+                backgroundColor: Cores.amarelo.withValues(alpha: 0.18),
+                foregroundColor: const Color(0xFF8A6100)) : null,
+              icon: Icon(favorito ? Icons.star : Icons.star_border),
+              label: Text(favorito ? 'Seu favorito' : 'Marcar como favorito'),
+            ),
+            const SizedBox(height: 6),
+            const Text('Você pode ter um favorito por vez.',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 12, color: Cores.secundario)),
+            const SizedBox(height: 24),
+            Grupo(titulo: 'Informações', filhos: [
+              _linha(Icons.category, Cores.azul, 'Espécie', personagem.especie),
+              _linha(Icons.wc, Cores.roxo, 'Gênero',
+                _generoEmPortugues(personagem.genero)),
+              _linha(Icons.public, Cores.laranja, 'Origem', personagem.origem),
+              _linha(Icons.location_on, Cores.vermelho, 'Localização atual',
+                personagem.localizacao),
+              _linha(Icons.tag, Cores.secundario, 'ID', '${personagem.id}'),
+            ]),
+          ],
+        ),
       ),
     );
   }

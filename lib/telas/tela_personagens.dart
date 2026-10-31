@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../modelos/personagem.dart';
+import '../tema.dart';
 import 'tela_detalhe_personagem.dart';
 
 class TelaPersonagens extends StatefulWidget {
@@ -73,78 +75,104 @@ class _TelaPersonagensState extends State<TelaPersonagens> {
     await carregarFavorito(); // atualiza a estrela ao voltar
   }
 
+  Widget _botaoPagina(IconData icone, String dica, VoidCallback? acao) =>
+    IconButton(
+      onPressed: acao,
+      tooltip: dica,
+      style: IconButton.styleFrom(
+        backgroundColor: Cores.verde.withValues(alpha: 0.12),
+        foregroundColor: Cores.verde,
+        disabledBackgroundColor: Cores.separador),
+      icon: Icon(icone),
+    );
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Personagens')),
-      body: Column(children: [
-        Padding(
-          padding: const EdgeInsets.all(8),
-          child: SegmentedButton<String>(
-            segments: const [
-              ButtonSegment(value: '', label: Text('Todos')),
-              ButtonSegment(value: 'alive', label: Text('Vivos')),
-              ButtonSegment(value: 'dead', label: Text('Mortos')),
-            ],
-            selected: {_status},
-            onSelectionChanged: (s) => _trocarStatus(s.first),
+    return Theme(
+      data: tema(Cores.verde),
+      child: Scaffold(
+        appBar: AppBar(title: const Text('Personagens')),
+        body: Column(children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
+            child: SizedBox(width: double.infinity,
+              child: CupertinoSlidingSegmentedControl<String>(
+                groupValue: _status,
+                children: const {
+                  '': Text('Todos'),
+                  'alive': Text('Vivos'),
+                  'dead': Text('Mortos'),
+                },
+                onValueChanged: (s) => _trocarStatus(s ?? ''),
+              )),
           ),
-        ),
-        Expanded(child: FutureBuilder<List<Personagem>>(
-          future: _futuro,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (snapshot.hasError) {
-              return Center(
-                child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  const Text('Não foi possível carregar os personagens.'),
-                  const SizedBox(height: 12),
-                  ElevatedButton(onPressed: _recarregar,
-                    child: const Text('Tentar de novo')),
-                ]),
-              );
-            }
-            final personagens = snapshot.data!;
-            return ListView.builder(
-              padding: const EdgeInsets.all(8),
-              itemCount: personagens.length,
-              itemBuilder: (context, i) {
-                final p = personagens[i];
-                return Card(
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundImage: NetworkImage(p.imagem)),
-                    title: Text(p.nome),
-                    subtitle: Text('${p.especie} · ${p.status}'),
-                    trailing: p.id == _favorito
-                        ? const Icon(Icons.star, color: Colors.amber)
-                        : const Icon(Icons.chevron_right),
-                    onTap: () => _abrirDetalhe(p),
-                  ),
+          Expanded(child: FutureBuilder<List<Personagem>>(
+            future: _futuro,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator.adaptive());
+              }
+              if (snapshot.hasError) {
+                return Center(
+                  child: Column(mainAxisSize: MainAxisSize.min, children: [
+                    const Aviso(Icons.wifi_off,
+                      'Não foi possível carregar os personagens.'),
+                    ElevatedButton(onPressed: _recarregar,
+                      child: const Text('Tentar de novo')),
+                  ]),
                 );
-              },
-            );
-          },
-        )),
-        Padding(
-          padding: const EdgeInsets.all(8),
-          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              ElevatedButton.icon(
-                onPressed: _pagina > 1 ? () => _irParaPagina(_pagina - 1) : null,
-                icon: const Icon(Icons.chevron_left),
-                label: const Text('Anterior')),
-              Text('Página $_pagina de $_totalPaginas'),
-              ElevatedButton.icon(
-                onPressed: _pagina < _totalPaginas
-                    ? () => _irParaPagina(_pagina + 1) : null,
-                icon: const Icon(Icons.chevron_right),
-                label: const Text('Próxima')),
+              }
+              final personagens = snapshot.data!;
+              return ListView.builder(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                itemCount: personagens.length,
+                itemBuilder: (context, i) {
+                  final p = personagens[i];
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Card(
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 4),
+                        leading: CircleAvatar(
+                          radius: 26,
+                          backgroundImage: NetworkImage(p.imagem)),
+                        title: Text(p.nome,
+                          style: const TextStyle(fontWeight: FontWeight.w600)),
+                        subtitle: Row(children: [
+                          Icon(Icons.circle, size: 8, color: corDoStatus(p.status)),
+                          const SizedBox(width: 6),
+                          Flexible(child: Text(
+                            '${statusEmPortugues(p.status)} · ${p.especie}',
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(color: Cores.secundario))),
+                        ]),
+                        trailing: p.id == _favorito
+                            ? const Icon(Icons.star, color: Cores.amarelo)
+                            : const Icon(Icons.chevron_right,
+                                color: Cores.secundario),
+                        onTap: () => _abrirDetalhe(p),
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+          )),
+          SafeArea(top: false, child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+            child: Row(children: [
+              _botaoPagina(Icons.chevron_left, 'Página anterior',
+                _pagina > 1 ? () => _irParaPagina(_pagina - 1) : null),
+              Expanded(child: Text('Página $_pagina de $_totalPaginas',
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Cores.secundario))),
+              _botaoPagina(Icons.chevron_right, 'Próxima página',
+                _pagina < _totalPaginas ? () => _irParaPagina(_pagina + 1) : null),
             ]),
-        ),
-      ]),
+          )),
+        ]),
+      ),
     );
   }
 }

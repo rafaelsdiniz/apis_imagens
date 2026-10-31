@@ -30,6 +30,19 @@ Um único projeto (`apis_imagens`) com uma tela inicial e três telas que buscam
 | ⚡ **Pokédex** | Busca por nome ou número, ou sorteia um dos 151 primeiros; mostra ID, imagem, tipos, altura e peso | [pokeapi.co](https://pokeapi.co/) |
 | 🛸 **Personagens** | Lista paginada com filtro por status; o detalhe mostra gênero, origem, localização e permite favoritar | [rickandmortyapi.com](https://rickandmortyapi.com/) |
 
+## 🎨 Visual
+
+Interface inspirada no **iOS**: fundo cinza de sistema, listas agrupadas com ícones coloridos (como nos Ajustes do iPhone), controle segmentado, spinner e transições do iPhone.
+
+Cada tela tem **uma única cor de destaque**, e o resto fica em tons neutros, para a cor aparecer só no que é tocável ou selecionado:
+
+| Tela | Cor | Por quê |
+|------|-----|---------|
+| Início | 🔵 Azul | Cor padrão de ação do iOS |
+| Cães | 🟠 Laranja, com fundo creme | Cor quente e alegre; o creme é análogo ao laranja |
+| Pokédex | 🔴 Vermelho | A cor da Pokédex; o card ganha o tom do tipo do Pokémon |
+| Personagens | 🟢 Verde | A cor do portal da série |
+
 ## 🧠 Conceitos praticados
 
 - Requisições **GET** com o pacote `http` e `async` / `await`
@@ -59,7 +72,8 @@ Um único projeto (`apis_imagens`) com uma tela inicial e três telas que buscam
 
 ```
 lib/
- ├── main.dart                         tela inicial com os três botões
+ ├── main.dart                         tela inicial (lista agrupada estilo iOS)
+ ├── tema.dart                         cores, tema e componentes visuais
  ├── modelos/
  │    └── personagem.dart              classe Personagem com fromMap
  └── telas/
