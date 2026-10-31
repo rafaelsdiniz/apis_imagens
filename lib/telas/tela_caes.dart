@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../tema.dart';
 
-// Exercício 1: fundo creme, análogo ao laranja de destaque
 const _fundoCaes = Color(0xFFFFF8F0);
 
 class TelaCaes extends StatefulWidget {
@@ -17,9 +16,8 @@ class _TelaCaesState extends State<TelaCaes> {
   String? imagem;
   String? erro;
   bool carregando = false;
-  int contador = 0; // exercício 2
+  int contador = 0;
 
-  // Exercício 3: raças disponíveis (nome na API -> nome na tela)
   final racas = const {
     'hound': 'Hound',
     'husky': 'Husky',

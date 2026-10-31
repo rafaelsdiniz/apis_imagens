@@ -16,15 +16,15 @@ class TelaPersonagens extends StatefulWidget {
 
 class _TelaPersonagensState extends State<TelaPersonagens> {
   late Future<List<Personagem>> _futuro;
-  String _status = '';     // exercício 8: '' = todos, 'alive', 'dead'
-  int _pagina = 1;         // exercício 9
-  int _totalPaginas = 1;   // vem de info.pages
-  int? _favorito;          // exercício 10
+  String _status = '';
+  int _pagina = 1;
+  int _totalPaginas = 1;
+  int? _favorito;
 
   @override
   void initState() {
     super.initState();
-    _futuro = buscarPersonagens(); // pede os dados UMA vez, ao abrir a tela
+    _futuro = buscarPersonagens();
     carregarFavorito();
   }
 
@@ -42,7 +42,6 @@ class _TelaPersonagensState extends State<TelaPersonagens> {
       throw Exception('Falha na consulta: ${resposta.statusCode}');
     }
     final dados = jsonDecode(resposta.body) as Map<String, dynamic>;
-    // o rótulo de página fica fora do FutureBuilder, então precisa de setState
     if (mounted) setState(() { _totalPaginas = dados['info']['pages']; });
     final lista = dados['results'] as List<dynamic>;
     return lista
@@ -57,7 +56,7 @@ class _TelaPersonagensState extends State<TelaPersonagens> {
   void _trocarStatus(String status) {
     setState(() {
       _status = status;
-      _pagina = 1; // cada filtro tem sua própria quantidade de páginas
+      _pagina = 1;
       _futuro = buscarPersonagens();
     });
   }
@@ -72,7 +71,7 @@ class _TelaPersonagensState extends State<TelaPersonagens> {
   Future<void> _abrirDetalhe(Personagem p) async {
     await Navigator.push(context,
       MaterialPageRoute(builder: (_) => TelaDetalhePersonagem(personagem: p)));
-    await carregarFavorito(); // atualiza a estrela ao voltar
+    await carregarFavorito();
   }
 
   Widget _botaoPagina(IconData icone, String dica, VoidCallback? acao) =>

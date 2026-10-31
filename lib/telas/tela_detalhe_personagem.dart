@@ -3,7 +3,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../modelos/personagem.dart';
 import '../tema.dart';
 
-// Usadas também na lista de personagens
 Color corDoStatus(String status) {
   switch (status) {
     case 'Alive': return const Color(0xFF34C759);
@@ -30,7 +29,6 @@ String _generoEmPortugues(String genero) {
   }
 }
 
-// Exercício 10: virou Stateful para controlar o botão de favorito
 class TelaDetalhePersonagem extends StatefulWidget {
   final Personagem personagem;
   const TelaDetalhePersonagem({super.key, required this.personagem});
@@ -56,7 +54,6 @@ class _TelaDetalhePersonagemState extends State<TelaDetalhePersonagem> {
     });
   }
 
-  // Salva só o id; tocar de novo no favorito atual desmarca
   Future<void> alternarFavorito() async {
     final prefs = await SharedPreferences.getInstance();
     if (favorito) {

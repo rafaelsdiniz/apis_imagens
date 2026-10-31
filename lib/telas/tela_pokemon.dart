@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../tema.dart';
 
-// Exercício 6: nome em português e cor de cada tipo
 const _tipos = <String, (String, Color)>{
   'normal': ('Normal', Color(0xFFA8A77A)),
   'fire': ('Fogo', Color(0xFFEE8130)),
@@ -65,7 +64,6 @@ class _TelaPokemonState extends State<TelaPokemon> {
     }
   }
 
-  // Exercício 5: sorteia um número entre 1 e 151
   void buscarAleatorio() {
     controle.text = '${Random().nextInt(151) + 1}';
     buscarPokemon();
@@ -82,7 +80,6 @@ class _TelaPokemonState extends State<TelaPokemon> {
 
   Widget _cartao() {
     final sprite = pokemon?['sprites']?['front_default'];
-    // Exercício 6: cada item de types tem ['type']['name']
     final tipos = (pokemon!['types'] as List<dynamic>)
         .map((t) => t['type']['name'] as String)
         .toList();
@@ -91,7 +88,6 @@ class _TelaPokemonState extends State<TelaPokemon> {
     final altura = (pokemon!['height'] / 10).toStringAsFixed(1).replaceAll('.', ',');
     final peso = (pokemon!['weight'] / 10).toStringAsFixed(1).replaceAll('.', ',');
 
-    // Exercício 4: resultado dentro de um Card, com o ID
     return Card(
       clipBehavior: Clip.antiAlias,
       child: Column(children: [

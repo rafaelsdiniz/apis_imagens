@@ -5,8 +5,8 @@ class Personagem {
   final String especie;
   final String origem;
   final String imagem;
-  final String genero;      // exercício 7
-  final String localizacao; // exercício 7
+  final String genero;
+  final String localizacao;
 
   Personagem({
     required this.id,
@@ -19,7 +19,6 @@ class Personagem {
     required this.localizacao,
   });
 
-  // Converte um item do JSON (Map) em objeto Personagem
   factory Personagem.fromMap(Map<String, dynamic> m) => Personagem(
     id: m['id'],
     nome: m['name'],

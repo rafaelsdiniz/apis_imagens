@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-// Paleta inspirada nas cores de sistema do iOS. Cada tela usa UMA cor de
-// destaque e o resto fica em tons neutros, para a cor aparecer só onde o
-// usuário pode tocar ou no que está selecionado.
 class Cores {
   static const fundo = Color(0xFFF2F2F7);
   static const cartao = Colors.white;
@@ -21,9 +18,9 @@ class Cores {
 ThemeData tema(Color cor) {
   final base = ThemeData(
     useMaterial3: true,
-    platform: TargetPlatform.iOS, // transições e seta de voltar do iPhone
+    platform: TargetPlatform.iOS,
     scaffoldBackgroundColor: Cores.fundo,
-    fontFamily: GoogleFonts.inter().fontFamily, // fonte parecida com a do iPhone
+    fontFamily: GoogleFonts.inter().fontFamily,
     colorScheme: ColorScheme.fromSeed(seedColor: cor).copyWith(
       primary: cor, onPrimary: Colors.white, surface: Cores.cartao),
   );
@@ -75,7 +72,6 @@ ThemeData tema(Color cor) {
   );
 }
 
-// Ícone branco em um quadrado colorido, como nos Ajustes do iPhone
 class IconeQuadrado extends StatelessWidget {
   final IconData icone;
   final Color cor;
@@ -90,7 +86,6 @@ class IconeQuadrado extends StatelessWidget {
   );
 }
 
-// Lista agrupada (inset grouped) do iOS: título pequeno e itens num cartão
 class Grupo extends StatelessWidget {
   final String? titulo;
   final List<Widget> filhos;
@@ -118,7 +113,6 @@ class Grupo extends StatelessWidget {
   );
 }
 
-// Mensagem central com ícone, usada para vazio e erro
 class Aviso extends StatelessWidget {
   final IconData icone;
   final String texto;
