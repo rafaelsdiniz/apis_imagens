@@ -49,7 +49,7 @@ Cada tela tem **uma única cor de destaque**, e o resto fica em tons neutros, pa
 - **JSON** simples, aninhado e em lista, convertido com `jsonDecode`
 - Classe modelo com `factory fromMap`
 - Estados de **carregando** e **erro** com `setState`, `try` / `catch` / `finally` e `mounted`
-- `FutureBuilder`, `ListView.builder`, `Card`, `ListTile`, `Chip`, `ChoiceChip`, `SegmentedButton`
+- `FutureBuilder`, `ListView.builder`, `Card`, `ListTile`, `Chip`, `ChoiceChip`, `CupertinoSlidingSegmentedControl`
 - Navegação passando objetos pelo construtor (`Navigator.push`)
 - Persistência local com **SharedPreferences**
 
