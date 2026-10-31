@@ -74,7 +74,7 @@ class _TelaCaesState extends State<TelaCaes> {
     child: Scaffold(
       backgroundColor: _fundoCaes,
       appBar: AppBar(
-        title: const Text('Au Au Galeria'),
+        title: const Text('Galeria de cachorros'),
         backgroundColor: _fundoCaes,
       ),
       body: SafeArea(child: Column(children: [
